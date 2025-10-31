@@ -18,8 +18,9 @@
 #  1 Jan 14 1.0.5	meo	Show Port number in output files, PostGIS
 # 14 Feb 18 1.0.6	meo	Postgres 10 uses different process names and directories (a) Debian/Ubuntu use title
 #  3 Sep 22 1.0.7       meo     No more egrep (deprecated since 2007 and with a warning in grep 3.8)
+# 15 Aug 25 1.0.8       meo     Debian/Ubuntu default path
 
-PL_VERSION=1.0.7
+PL_VERSION=1.0.8
 PL_DESCR="PostgreSQL"
 
 echo '<P><A NAME="postgres"></A><H2>' $PL_DESCR '</h2>' 
@@ -129,7 +130,9 @@ EOF
   cat $INST_DIR/pg.home
   echo "<p>"
   find . -name 'postgresql.conf' -exec echo "<br><b>" {} "</b><pre>" \; -exec sh -c 'grep ^[a-z] {} | tr "<>" "--"' \; -exec echo "</pre>" \; 
+  find /etc/postgresql -name 'postgresql.conf' -exec echo "<br><b>" {} "</b><pre>" \; -exec sh -c 'grep ^[a-z] {} | tr "<>" "--"' \; -exec echo "</pre>" \; 
   find . -name 'pg_hba.conf' -exec echo "<br><b>" {} "</b><pre>" \; -exec grep ^[a-z] {} \; -exec echo "</pre>" \;
+  find /etc/postgresql -name 'pg_hba.conf' -exec echo "<br><b>" {} "</b><pre>" \; -exec grep ^[a-z] {} \; -exec echo "</pre>" \;
   find . -name 'recovery.conf' -exec echo "<br><b>" {} "</b><pre>" \; -exec grep ^[a-z] {} \; -exec echo "</pre>" \;
 # find . -name '*.log' -exec echo "<li><b>" {} "</b><pre>" \; -exec tail -$LOGMSG {} \; -exec echo "</pre>" \;
   echo "<br><b>WAL</b><pre>"
@@ -165,19 +168,21 @@ eval $PKG | grep -i postgis 2> /dev/null
 UX2PG=`cat pg.home`
 echo '<br>'
 echo '<b>DB Server Logs</b>'
-ls -ltr $UX2PG/pg_log $UX2PG/log | tail -$LOGMSG
+ls -ltr $UX2PG/pg_log $UX2PG/log /var/lib/postgres/*/*/log | tail -$LOGMSG
 
 echo '<br>'
 echo '<b>Last Log excerpt</b>'
 tail -$LOGMSG $UX2PG/log/`ls -tr $UX2PG/log | tail -1`
+tail -$LOGMSG /var/lib/postgresql/*/*/log/`ls -tr /var/lib/postgresql/*/*/log | tail -1`
 
 echo '<br>'
 echo '<b>Last Errors</b>'
-grep -E 'ERROR|FATAL' $UX2PG/log/`ls -tr $UX2PG/log | tail -1`
+grep -E 'ERROR|FATAL' $UX2PG/log/`ls -tr $UX2PG/log | tail -1` | tail -$LOGMSG
+grep -E 'ERROR|FATAL' /var/lib/postgresql/*/*/log/`ls -tr /var/lib/postgresql/*/*/log | tail -1` | tail -$LOGMSG
 
 echo '<br>'
 echo '<b>Write-Ahead Logs</b>'
-ls -ltr $UX2PG/pg_xlog $UX2PG/pg_wal | tail -$LOGMSG
+ls -ltr $UX2PG/pg_xlog $UX2PG/pg_wal /var/lib/postgresql/*/*/pg_wal| tail -$LOGMSG
 
 echo '</PRE>'
 

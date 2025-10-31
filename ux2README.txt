@@ -57,7 +57,7 @@ Plug-in are disabled moving them on file: ux2d-XXX-PlugInName.sh
 
 
 License:
-Copyright 1996-2024 mail@meo.bogliolo.name 
+Copyright 1996-2025 mail@meo.bogliolo.name 
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

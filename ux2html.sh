@@ -44,11 +44,12 @@
 #  1 Aug 19 1.3.13      meo     Plugin updates. (a) More security file checked
 #  1 Jan 20 1.3.14      meo     Plugin updates
 #  3 Sep 22 1.3.15      meo     Several plugin updates, some due to egrep/fgrep explicit deprecation in GNU egrep 3.8; Corosync-Pacemaker
-#  1 Jan 23 1.3.16      meo     lstopo-no-graphics; plugin updates (a) ss (b) plugin updates
+#  1 Jan 23 1.3.16      meo     lstopo-no-graphics; plugin updates (a) ss (b) plugin updates (c) 2025-10-31 new CSS
+# 31 Oct 25 1.3.17      meo     Plugin updates, new CSS
 
-VERSION=1.3.16b
+VERSION=1.3.17
 
-# Copyright 1995-2024 mail@meo.bogliolo.name 
+# Copyright 1995-2025 mail@meo.bogliolo.name 
 # 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -95,14 +96,14 @@ awk '{ print "<tr><td> ", $1, "  <td>", $2, "  <td>", $3, "  <td>", $4, "  <td>"
 
 table_build()
 {
-echo '<table border="1" summary="Easy reading table">'
+echo '<table class="bordered" summary="Easy reading table">'
 awk '{ print "<tr><td> ", $1, "  <td>", $2, "  <td>", $3, "  <td>", $4, "  <td>", $5, "  <td>", $6, "  <td>", $7, "  <td>", $8, "  <td>", $9, "  <td>", $10 }'
 echo "</table>"
 }
 
 table_buildn()
 {
-echo '<table border="1" summary="Easy reading numeric table">'
+echo '<table class="bordered" summary="Easy reading numeric table">'
 awk '{ print "<tr><td> ", $1, "  <td align=right>", $2, "  <td align=right>", $3, "  <td align=right>", $4, "  <td align=right>", $5, "  <td align=right>", $6, "  <td align=right>", $7 }'
 echo "</table>"
 }
@@ -336,7 +337,7 @@ then
         HW_DEVICE='ioscan -fkn; rad -q' 
         HW_DISK='ioscan -kC disk'
         FC_DISK='fcmsutil /dev/fcd0 ; fcmsutil /dev/fcd1'
-	HW_NET="lanscan; echo '<P>'; HP_lan_scan"
+	HW_NET="lanscan; echo '<p>'; HP_lan_scan"
 	PKG='swlist -l bundle'
 	PATCH=swlist
 	# On hpux 11.23 kmtune -> kctune
@@ -449,7 +450,7 @@ then
         HW_PROC='psrinfo -v; consvar -v -d'
         HW_MEM='uerf -r 400 | grep -i mem'
         HW_DEVICE='scu scan edt > /dev/null; scu show edt'
-        HW_DISK='echo "See <A HREF="#hw_device">Device Section</A>"'
+        HW_DISK='echo "See <a href="#hw_device">Device Section</a>"'
         VOL_TOT=' ls /etc/fdmns | xargs showfdmn -k '
         VOL='volprint -Ath'
         VXDG='voldg'
@@ -488,7 +489,7 @@ elif [ $SYSTYPE = DYNIX/ptx ]
 then
 	MAC_TYPE='Numa Unix'
         DF='df -k | cat'
-        HW_DISK='echo "See <A HREF="#hw_device">Device Section</A>"'
+        HW_DISK='echo "See <a href="#hw_device">Device Section</a>"'
         SWAP='swap -l; swap -f'
         HW_NET='ifconfig -a'
 	SW_DIAG='tail -$ERRLEN /usr/adm/messages'
@@ -676,130 +677,131 @@ fi
 ### Printout data collection
 ## MENU
 echo '<!DOCTYPE html>'
-echo '<html lang="en"> <head> <meta charset="UTF-8" /> <link rel="stylesheet" href="ux3.css" />'
+echo '<html lang="en"> <head> <meta charset="UTF-8" /> <link rel="stylesheet" href="style.css" />'
 echo '<title>' $MACHINE ' - ux2html Unix Statistics</title> </head>'
 echo '<body>'
 
-echo '<P><a id="top"></A>' 
+echo '<p><a id="top"></a>' 
 echo '<h1 align=center>'
 echo $MACHINE 
 echo '</h1>'
 
 
 echo '<table><tr><td><ul>' 
-echo '<li><A HREF="#machine">System</A>' 
+echo '<li><a href="#machine">System</a>' 
 if [ $SUMMARY_MENU -eq 0 ] ; then
   echo ' <ul>'
-  echo ' <li><A HREF="#machine">System name and Version</A></li>' 
-  echo ' <li><A HREF="#mac_notes">System Description</A></li>' 
+  echo ' <li><a href="#machine">System name and Version</a></li>' 
+  echo ' <li><a href="#mac_notes">System Description</a></li>' 
   if [ $SUMMARY -eq 0 ] ; then
-    echo ' <li><A HREF="#user">Users</A></li>' 
-    echo ' <li><A HREF="#group">Groups</A></li>' 
-    echo ' <li><A HREF="#sec">System Security</A></li>' 
+    echo ' <li><a href="#user">Users</a></li>' 
+    echo ' <li><a href="#group">Groups</a></li>' 
+    echo ' <li><a href="#sec">System Security</a></li>' 
   fi
   echo ' </ul>'
 fi
 
-echo '<li><A HREF="#sdf">Space Configuration</A>' 
+echo '<li><a href="#sdf">Space Configuration</a>' 
 if [ $SUMMARY_MENU -eq 0 ] ; then
   echo ' <ul>'
-  echo ' <li><A HREF="#df">File Systems</A></li>' 
-  echo ' <li><A HREF="#vol_tot">Volume Summary</A></li>' 
+  echo ' <li><a href="#df">File Systems</a></li>' 
+  echo ' <li><a href="#vol_tot">Volume Summary</a></li>' 
   if [ $SUMMARY -eq 0 ] ; then
-    echo ' <li><A HREF="#vol">Logical Volumes</A></li>' 
+    echo ' <li><a href="#vol">Logical Volumes</a></li>' 
   fi
   echo ' </ul>'
 fi
 
-echo '<li><A HREF="#net">Network Configuration</A>' 
+echo '<li><a href="#net">Network Configuration</a>' 
 if [ $SUMMARY_MENU -eq 0 ] ; then
   echo ' <ul>'
-  echo ' <li><A HREF="#net">IP Addresses</A></li>' 
-  echo ' <li><A HREF="#hw_net">Network Adapters</A></li>' 
+  echo ' <li><a href="#net">IP Addresses</a></li>' 
+  echo ' <li><a href="#hw_net">Network Adapters</a></li>' 
   if [ $SUMMARY -eq 0 ] ; then
-    echo ' <li><A HREF="#hosts">Host file</A></li>' 
-    echo ' <li><A HREF="#dnsc">DNS Client</A></li>' 
-    echo ' <li><A HREF="#dnss">DNS Server</A></li>' 
-    echo ' <li><A HREF="#route">Routing</A></li>' 
-    echo ' <li><A HREF="#nfs">NFS</A></li>' 
-    echo ' <li><A HREF="#ntp">NTP</A></li>' 
+    echo ' <li><a href="#hosts">Host file</a></li>' 
+    echo ' <li><a href="#dnsc">DNS Client</a></li>' 
+    echo ' <li><a href="#dnss">DNS Server</a></li>' 
+    echo ' <li><a href="#route">Routing</a></li>' 
+    echo ' <li><a href="#nfs">NFS</a></li>' 
+    echo ' <li><a href="#ntp">NTP</a></li>' 
   fi
   echo ' </ul>'
 fi
 echo ' </ul>'
 
-echo '<td><ul><li><A HREF="#conf">HW Configuration</A>' 
+echo '<td><ul><li><a href="#conf">HW Configuration</a>' 
 if [ $SUMMARY_MENU -eq 0 ] ; then
   echo ' <ul>'
-  echo ' <li><A HREF="#hw_proc">Processors</A></li>' 
-  echo ' <li><A HREF="#hw_mem">Memory</A></li>' 
-  echo ' <li><A HREF="#hw_device">Devices</A></li>' 
+  echo ' <li><a href="#hw_proc">Processors</a></li>' 
+  echo ' <li><a href="#hw_mem">Memory</a></li>' 
+  echo ' <li><a href="#hw_device">Devices</a></li>' 
   if [ $SUMMARY -eq 0 ] ; then
-    echo ' <li><A HREF="#hw_disk">Disks</A> (<A HREF="#hw_disk2">Other infos</A>)</li>' 
-    echo ' <li><A HREF="#fc_disk">Fiber Channel Adapters</A></li>' 
+    echo ' <li><a href="#hw_disk">Disks</a> (<a href="#hw_disk2">Other infos</a>)</li>' 
+    echo ' <li><a href="#fc_disk">Fiber Channel Adapters</a></li>' 
   fi
-  echo ' <li><A HREF="#format">Disk User Info</A></li>' 
-  echo ' <li><A HREF="#par">System Partitioning</A></li>' 
+  echo ' <li><a href="#format">Disk User Info</a></li>' 
+  echo ' <li><a href="#par">System Partitioning</a></li>' 
   echo ' </ul>'
 fi
 
-echo '<li><A HREF="#confs">SW Configuration</A>' 
+echo '<li><a href="#confs">SW Configuration</a>' 
 if [ $SUMMARY_MENU -eq 0 ] ; then
   echo ' <ul>'
-  echo ' <li><A HREF="#swap">Swap Space</A></li>' 
-  echo ' <li><A HREF="#dirs">Directories Usage</A></li>' 
+  echo ' <li><a href="#dist">OS Distribution</a></li>' 
+  echo ' <li><a href="#swap">Swap Space</a></li>' 
+  echo ' <li><a href="#dirs">Directories Usage</a></li>' 
   if [ $SUMMARY -eq 0 ] ; then
-    echo ' <li><A HREF="#lp">Printers</A></li>' 
-    echo ' <li><A HREF="#pkg">SW Packages</A></li>' 
-    echo ' <li><A HREF="#license">Licenses</A></li>' 
-    echo ' <li><A HREF="#kern">Kernel Parameters</A></li>' 
-    echo ' <li><A HREF="#patch">Installed Patches/Distrib.</A></li>' 
-    echo ' <li><A HREF="#boot">Boot scripts</A></li>' 
-    echo ' <li><A HREF="#lboot">Last Boot</A></li>' 
-    echo ' <li><A HREF="#cluc">Cluster configuration</A></li>' 
+    echo ' <li><a href="#lp">Printers</a></li>' 
+    echo ' <li><a href="#pkg">SW Packages</a></li>' 
+    echo ' <li><a href="#license">Licenses</a></li>' 
+    echo ' <li><a href="#kern">Kernel Parameters</a></li>' 
+    echo ' <li><a href="#patch">Installed Patches/Distrib.</a></li>' 
+    echo ' <li><a href="#boot">Boot scripts</a></li>' 
+    echo ' <li><a href="#lboot">Last Boot</a></li>' 
+    echo ' <li><a href="#cluc">Cluster configuration</a></li>' 
   fi
   echo ' </ul>'
 fi
 echo ' </ul><td><ul>'
 
-echo '<li><A HREF="#stat">System Status</A>' 
+echo '<li><a href="#stat">System Status</a>' 
 if [ $SUMMARY_MENU -eq 0 ] ; then
   echo ' <ul>'
-  echo ' <li><A HREF="#ssum">Status Summary</A></li>' 
+  echo ' <li><a href="#ssum">Status Summary</a></li>' 
   if [ $SUMMARY -eq 0 ] ; then
-    echo ' <li><A HREF="#procs">Processes</A></li>' 
-    echo ' <li><A HREF="#vmstat">System Usage</A></li>' 
-    echo ' <li><A HREF="#ipc">InterProcess Communication</A></li>' 
-    echo ' <li><A HREF="#neta">Network Activity</A></li>' 
-    echo ' <li><A HREF="#servs">Active Services</A></li>' 
-    echo ' <li><A HREF="#cron">Cron</A></li>' 
+    echo ' <li><a href="#procs">Processes</a></li>' 
+    echo ' <li><a href="#vmstat">System Usage</a></li>' 
+    echo ' <li><a href="#ipc">InterProcess Communication</a></li>' 
+    echo ' <li><a href="#neta">Network Activity</a></li>' 
+    echo ' <li><a href="#servs">Active Services</a></li>' 
+    echo ' <li><a href="#cron">Cron</a></li>' 
   fi
-  echo ' <li><A HREF="#clu">Cluster status</A></li>' 
-  echo '<li><A HREF="#act">Activity log</A></li>' 
+  echo ' <li><a href="#clu">Cluster status</a></li>' 
+  echo '<li><a href="#act">Activity log</a></li>' 
   if [ $SUMMARY -eq 0 ] ; then
-    echo ' <li><A HREF="#sw_diag">Software Diagnostics</A></li>' 
-    echo ' <li><A HREF="#hw_diag">Hardware Diagnostics</A></li>' 
+    echo ' <li><a href="#sw_diag">Software Diagnostics</a></li>' 
+    echo ' <li><a href="#hw_diag">Hardware Diagnostics</a></li>' 
   fi
   echo ' </ul>'
 fi
 
-echo '<li><A HREF="#optm">Plug-in</A>' 
+echo '<li><a href="#optm">Plug-in</a>' 
 if [ $SUMMARY_MENU -eq 0 ] ; then
   echo ' <ul>'
   X=0
   for i in `ls ux2p.*.*.sh`
   do
       XX=`echo $i | awk -F. ' { print $3 } ' `
-      echo ' <li><A HREF="#Plugin'$X'">' $XX '</A></li>' 
+      echo ' <li><a href="#Plugin'$X'">' $XX '</a></li>' 
       X=`expr $X + 1 `
   done
   echo ' </ul>'
 fi
-echo '<li><A HREF="#opt">HTML Files</A>' 
-echo '</ul></table><P>' 
+echo '<li><a href="#opt">HTML Files</a>' 
+echo '</ul></table><p>' 
 
 ## Printing system info
-echo '<hr><P>Statistics generated on: '
+echo '<hr><p>Statistics generated on: '
 date
 echo 'from: '
 pwd
@@ -813,7 +815,7 @@ else
 fi
 
 
-echo '<P><I>General Unix Schema: <b>ux2html.sh</b> v.' $VERSION
+echo '<p><I>General Unix Schema: <b>ux2html.sh</b> v.' $VERSION
 if [ $G_CONF -eq 1 ] ; then
 	echo '+ Custom Configuration '
 fi
@@ -821,44 +823,43 @@ if [ $H_CONF -eq 1 ] ; then
 	echo '+ Local Host Custom Configuration'
 fi
 echo '<br>This software is released under the' 
-echo '<A HREF="http://www.gnu.org/licenses/gpl.html">GNU General Pubblic License</A>'
-echo 'by <A HREF="http://meoshome.it.eu.org/">Meo Bogliolo</A>.'
-echo 'See <A HREF="#LIC">below</A> for more information</I><p>'
+echo '<a href="http://www.gnu.org/licenses/gpl.html">GNU General Pubblic License</a>.'
+echo 'See <a href="#LIC">below</a> for more information</I><p>'
  
-echo '<hr><P><a id="machine"></A><H2>System</h2>' 
+echo '<hr><p><a id="machine"></a><H2>System</h2>' 
 echo '<b>'
 echo $MACHINE | break_lines
 echo '</b>'
-echo '<P>'
+echo '<p>'
 echo "System evaluated as: <b>" $MAC_TYPE '</b>'
 echo '<br>'
-echo '<P>'
-echo '<PRE>'
+echo '<p>'
+echo '<pre>'
 eval $MAC_DET 
-echo '</PRE>'
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '</pre>'
+echo '<p><a href="#top">Go to the top</a>' 
 
-echo '<HR><a id="mac_notes"></A><H3>System Description</h3>' 
+echo '<hr><a id="mac_notes"></a><H3>System Description</h3>' 
 cat /etc/.sys_descr.htm 2>/dev/null
-echo '<PRE>'
+echo '<pre>'
 eval $MAC_DET2
-echo '</PRE>'
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '</pre>'
+echo '<p><a href="#top">Go to the top</a>' 
 
 if [ $SUMMARY -eq 0 ] ; then
-  echo '<HR><a id="user"></A><H3>Users</h3>' 
-  echo '<PRE>'
+  echo '<hr><a id="user"></a><H3>Users</h3>' 
+  echo '<pre>'
   eval $USERS
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
-  echo '<HR><a id="group"></A><H3>Groups</h3>' 
-  echo '<PRE>'
+  echo '<hr><a id="group"></a><H3>Groups</h3>' 
+  echo '<pre>'
   eval $GRPS
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
-  echo '<HR><a id="sec"></A><H3>System Security Files</h3><pre>' 
+  echo '<hr><a id="sec"></a><H3>System Security Files</h3><pre>' 
   ls -l $SECF 2> /dev/null
   echo '</pre><p>'
   openssl md5 $SECF 2> /dev/null | break_lines
@@ -866,19 +867,19 @@ if [ $SUMMARY -eq 0 ] ; then
   # The following line SHOULD BE SKIPPED...
   more $SECF 2> /dev/null
   echo '</pre>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '<p><a href="#top">Go to the top</a>' 
 fi
 
-echo '<hr><P><a id="sdf"></A><H1>Space Configuration</h1>' 
-echo '<hr><P><a id="df"></A><H2>File Systems</h2>' 
+echo '<hr><p><a id="sdf"></a><H1>Space Configuration</h1>' 
+echo '<hr><p><a id="df"></a><H2>File Systems</h2>' 
 eval $DF | table_build
 echo '<p><H3>Mount Options</h3><pre>'
 grep -v '^#' $MOUNT_OPT | grep -v '^$'
 echo '</pre><p><H3>Current Mounts</h3>'
 eval $MOUNT_CURR | table_build
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '<p><a href="#top">Go to the top</a>' 
 
-echo '<hr><P><a id="vol_tot"></A><H2>Volumes Summary</h2>' 
+echo '<hr><p><a id="vol_tot"></a><H2>Volumes Summary</h2>' 
 if [ "X$VOL_TOT" != "X" ] ;  then
         eval $VOL_TOT | table_build
 fi
@@ -888,13 +889,13 @@ if [ "X$VXDG" != "X" ] ;  then
         vx_tot | table_buildn
 fi
 
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '<p><a href="#top">Go to the top</a>' 
 
 if [ $SUMMARY -eq 0 ] ; then
-  echo '<hr><P><a id="vol"></A><H2>Logical Volumes</h2>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="vol"></a><H2>Logical Volumes</h2>' 
+  echo '<pre>'
   eval $VOL 2> /dev/null
-  echo '</PRE>'
+  echo '</pre>'
   # Veritas VxVM
   if [ "X$VXPRINT" != "X" ]
       then
@@ -912,136 +913,156 @@ if [ $SUMMARY -eq 0 ] ; then
 	     echo '</pre>' 
      fi
   fi
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '<p><a href="#top">Go to the top</a>' 
 fi
 
-echo '<hr><P><a id="net"></A><H2>Network Configuration</h2>' 
-echo '<PRE>'
+echo '<hr><p><a id="net"></a><H2>Network Configuration</h2>' 
+echo '<pre>'
 eval $IP 
-echo '</PRE>'
-echo '<HR><a id="hw_net"></A><H3>Network Adapters</h3>' 
-echo '<PRE>'
+echo '</pre>'
+echo '<hr><a id="hw_net"></a><H3>Network Adapters</h3>' 
+echo '<pre>'
 eval $HW_NET
-echo '</PRE>'
+echo '</pre>'
 
 if [ $SUMMARY -eq 0 ] ; then
-  echo '<HR><a id="hosts"></A><H3>Host file</h3>' 
-  echo '<PRE>'
+  echo '<hr><a id="hosts"></a><H3>Host file</h3>' 
+  echo '<pre>'
   eval $HOSTS 
-  echo '</PRE>'
-  echo '<HR><a id="dnsc"></A><H3>DNS Client</h3>' 
+  echo '</pre>'
+  echo '<hr><a id="dnsc"></a><H3>DNS Client</h3>' 
   eval $DNSC | break_lines
-  echo '<HR><a id="dnss"></A><H3>DNS Server</h3>' 
-  echo '<PRE>'
+  echo '<hr><a id="dnss"></a><H3>DNS Server</h3>' 
+  echo '<pre>'
   eval $DNSS 
-  echo '</PRE>'
-  echo '<HR><a id="route"></A><H3>Routing</h3>' 
-  echo '<PRE>'
+  echo '</pre>'
+  echo '<hr><a id="route"></a><H3>Routing</h3>' 
+  echo '<pre>'
   eval $ROUTE 2>/dev/null
-  echo '</PRE>'
-  echo '<HR><a id="nfs"></A><H3>NFS</h3>' 
-  echo '<PRE>'
+  echo '</pre>'
+  echo '<hr><a id="nfs"></a><H3>NFS</h3>' 
+  echo '<pre>'
   eval $NFS
-  echo '</PRE>'
+  echo '</pre>'
 
-  echo '<HR><a id="ntp"></A><H3>NTP</h3>' 
-  echo '<PRE>'
+  echo '<hr><a id="ntp"></a><H3>NTP</h3>' 
+  echo '<pre>'
   eval $NTP
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
-  echo '<HR><a id="iftop"></A><H3>IFTOP</h3>' 
-  echo '<PRE>'
+  echo '<hr><a id="iftop"></a><H3>IFTOP</h3>' 
+  echo '<pre>'
   iftop -t -s 60   2>/dev/null
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 fi
 
-echo '<hr><P><a id="conf"></A><H2>HW Configuration</h2>' 
-echo '<P><a id="hw_proc"></A><H3>Processors</h3>' 
-echo '<PRE>'
+echo '<hr><p><a id="conf"></a><H2>HW Configuration</h2>' 
+echo '<p><a id="hw_proc"></a><H3>Processors</h3>' 
+echo '<pre>'
 eval $HW_PROC 
-echo '</PRE>'
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '</pre>'
+echo '<p><a href="#top">Go to the top</a>' 
 
-echo '<P><a id="hw_mem"></A><H3>Memory</h3>' 
+echo '<p><a id="hw_mem"></a><H3>Memory</h3>' 
 echo '<XMP>'
 eval $HW_MEM 
 echo '</XMP>'
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '<p><a href="#top">Go to the top</a>' 
 
-echo '<HR><a id="hw_device"></A><H3>Devices</h3>' 
-echo '<PRE>'
+echo '<hr><a id="hw_device"></a><H3>Devices</h3>' 
+echo '<pre>'
 if [ $SUMMARY -eq 0 ] ; then
   eval $HW_DEVICE 
 else
   eval $HW_DEVICE | head -$DATLEN
   echo '...'
 fi
-echo '</PRE>'
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '</pre>'
+echo '<p><a href="#top">Go to the top</a>' 
 
 if [ $SUMMARY -eq 0 ] ; then
-  echo '<HR><a id="hw_disk"></A><H3>Disks</h3>' 
-  echo '<PRE>'
+  echo '<hr><a id="hw_disk"></a><H3>Disks</h3>' 
+  echo '<pre>'
   eval $HW_DISK 
   echo
-  echo '<a id="hw_disk2"></A><H3>Storage Extended Infos</h3>' 
+  echo '<a id="hw_disk2"></a><H3>Storage Extended Infos</h3>' 
   eval $HW_DISK2
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
-  echo '<HR><a id="fc_disk"></A><H3>Fiber Channel Adapters</h3>' 
-  echo '<PRE>'
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
+  echo '<hr><a id="fc_disk"></a><H3>Fiber Channel Adapters</h3>' 
+  echo '<pre>'
   eval $FC_DISK 
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
 fi
 
-echo '<HR><a id="format"></A><H3>Disks User Info</h3>' 
+echo '<hr><a id="format"></a><H3>Disks User Info</h3>' 
 cat /etc/.sys_disk.htm 2>/dev/null
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '<p><a href="#top">Go to the top</a>' 
 
-  echo '<hr><P><a id="par"></A><H2>System Partitioning</h2>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="par"></a><H2>System Partitioning</h2>' 
+  echo '<pre>'
   eval $ETC_PAR  2>/dev/null
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
   
 
-echo '<hr><P><a id="confs"></A><H2>SW Configuration</h2>' 
+echo '<hr><p><a id="confs"></a><H2>SW Configuration</h2>' 
 
-echo '<hr><P><a id="swap"></A><h3>Swap Space</h3>' 
-echo '<PRE>'
+echo '<hr><p><a id="dist"></a><h3>OS Distribution</h3><p>' 
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    echo "$PRETTY_NAME"
+elif [ -f /etc/lsb-release ]; then           # Old Ubuntu
+    . /etc/lsb-release
+    echo "$DISTRIB_DESCRIPTION"
+elif [ -f /etc/redhat-release ]; then        # Red Hat, CentOS, Fedora, OL, 
+    cat /etc/redhat-release
+elif [ -f /etc/debian_version ]; then        # Debian
+    echo "Debian $(cat /etc/debian_version)"
+elif [ -f /etc/alpine-release ]; then        # Alpine
+    echo "Alpine Linux $(cat /etc/alpine-release)"
+elif [ -f /etc/SuSE-release ]; then          # SUSE
+    cat /etc/SuSE-release
+else 
+    uname -s -r
+fi
+echo '<p><a href="#top">Go to the top</a>' 
+
+echo '<hr><p><a id="swap"></a><h3>Swap Space</h3>' 
+echo '<pre>'
 eval $SWAP
-echo '</PRE>'
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '</pre>'
+echo '<p><a href="#top">Go to the top</a>' 
 
-echo '<hr><P><a id="dirs"></A><h3>Directories Usage</h3>' 
+echo '<hr><p><a id="dirs"></a><h3>Directories Usage</h3>' 
 echo '<pre>'
 for i in $APPL_FSS
 do
  eval $DU $i/* | sort -rn 2>/dev/null
 done
 echo '</pre>'
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '<p><a href="#top">Go to the top</a>' 
 
 if [ $SUMMARY -eq 0 ] ; then
-  echo '<hr><P><a id="lp"></A><h3>Printers</h3>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="lp"></a><h3>Printers</h3>' 
+  echo '<pre>'
   eval $LP
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
-  echo '<hr><P><a id="pkg"></A><h3>SW Packages</h3>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="pkg"></a><h3>SW Packages</h3>' 
+  echo '<pre>'
   eval $PKG 
   eval $REPO
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
-  echo '<hr><P><a id="license"></A><h3>Licenses</h3>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="license"></a><h3>Licenses</h3>' 
+  echo '<pre>'
   eval $LICENSE 
   which vxlicrep > /dev/null 2> /dev/null
   RES=$?
@@ -1053,79 +1074,79 @@ if [ $SUMMARY -eq 0 ] ; then
     # Very OLD (VxVM 3.2): 	/sbin/vxlicense -p
     vxlicrep
   fi
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
-  echo '<hr><P><a id="kern"></A><h3>Kernel Parameters</h3>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="kern"></a><h3>Kernel Parameters</h3>' 
+  echo '<pre>'
   eval $KERNEL 
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
-  echo '<hr><P><a id="patch"></A><h3>Installed Patches</h3>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="patch"></a><h3>Installed Patches</h3>' 
+  echo '<pre>'
   eval $PATCH 
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
-  echo '<HR><a id="boot"></A><H3>Boot scripts</h3>' 
-  echo '<PRE>'
+  echo '<hr><a id="boot"></a><H3>Boot scripts</h3>' 
+  echo '<pre>'
   eval $KBOOT 
-  echo '</PRE><br><PRE>'
+  echo '</pre><br><pre>'
   eval $BOOT 
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
-  echo '<HR><a id="lboot"></A><H3>Last Boot</h3>' 
+  echo '<hr><a id="lboot"></a><H3>Last Boot</h3>' 
   eval $LBOOT | break_lines
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '<p><a href="#top">Go to the top</a>' 
 
-  echo '<hr><P><a id="cluc"></A><H3>Cluster Configuration</h3>' 
+  echo '<hr><p><a id="cluc"></a><H3>Cluster Configuration</h3>' 
   echo '<xmp>'
   eval $DET_CLU 
   echo '</xmp>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '<p><a href="#top">Go to the top</a>' 
 
 fi
 
-echo '<hr><P><a id="clu"></A><H3>Cluster Status</h3>' 
-echo '<PRE>'
+echo '<hr><p><a id="clu"></a><H3>Cluster Status</h3>' 
+echo '<pre>'
 eval $ETC_CLU 
 echo '<br>'
 eval $LOG_CLU 
-echo '</PRE>'
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '</pre>'
+echo '<p><a href="#top">Go to the top</a>' 
 
-echo '<HR><a id="act"></A><H3>Activity Log</h3>' 
+echo '<hr><a id="act"></a><H3>Activity Log</h3>' 
 cat /etc/.sys_log.htm 2>/dev/null
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '<p><a href="#top">Go to the top</a>' 
 
-echo '<HR><a id="who"></A><H3>User Log</h3>' 
-echo '<PRE>'
+echo '<hr><a id="who"></a><H3>User Log</h3>' 
+echo '<pre>'
 eval $WHO 
 echo '<br>'
 eval $LASTB
 echo '<br>'
 eval $AUREP 
-echo '</PRE>'
-echo '<P><A HREF="#top">Go to the top</A>' 
+echo '</pre>'
+echo '<p><a href="#top">Go to the top</a>' 
 
 if [ $SUMMARY -eq 0 ] ; then
-  echo '<hr><P><a id="sw_diag"></A><h3>SW Diagnostics</h3>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="sw_diag"></a><h3>SW Diagnostics</h3>' 
+  echo '<pre>'
   eval $SW_DIAG 
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
   
-  echo '<hr><P><a id="hw_diag"></A><h3>HW Diagnostics</h3>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="hw_diag"></a><h3>HW Diagnostics</h3>' 
+  echo '<pre>'
   eval $HW_DIAG
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 fi
 
-  echo '<HR><a id="stat"></A><H2>System Status</h2>' 
-  echo '<hr><P><a id="ssum"></A><h3>Status Summary</h3>' 
+  echo '<hr><a id="stat"></a><H2>System Status</h2>' 
+  echo '<hr><p><a id="ssum"></a><h3>Status Summary</h3>' 
   echo '<H3>Process Count</H3>'
   if [ $SYSTYPE = Linux ] ; then
 	  echo '<p>'
@@ -1149,7 +1170,7 @@ fi
   else
    ipcs -as | awk ' BEGIN {x=0; c=0} {x=x+$9; c=c+1} END {print c, x} '
   fi
-  echo '<H3>TCP Activities</H3><PRE>'
+  echo '<H3>TCP Activities</H3><pre>'
   if [ $SYSTYPE = HPUX -o $SYSTYPE = HP-UX ] ; then
    netstat -an | grep tcp | cut -b69-80 | sort | uniq -c
   elif [ $SYSTYPE = Solaris -o $SYSTYPE = SUN -o $SYSTYPE = SunOS ] ; then
@@ -1159,50 +1180,50 @@ fi
   elif [ $SYSTYPE = AIX ] ; then
    netstat -an | grep tcp | cut -b68-80 | sort | uniq -c
   fi
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
 if [ $SUMMARY -eq 0 ] ; then
-  echo '<hr><P><a id="procs"></A><H2>Processes</h2>' 
+  echo '<hr><p><a id="procs"></a><H2>Processes</h2>' 
   echo '<XMP>'
   eval $PS | grep -v ux2htm
   echo '</XMP>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '<p><a href="#top">Go to the top</a>' 
   
-  echo '<hr><P><a id="vmstat"></A><H2>System usage</h2>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="vmstat"></a><H2>System usage</h2>' 
+  echo '<pre>'
   eval $VMSTAT 
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
   
-  echo '<hr><P><a id="ipc"></A><H2>InterProcess Communication</h2>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="ipc"></a><H2>InterProcess Communication</h2>' 
+  echo '<pre>'
   eval $IPC
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
   
-  echo '<hr><P><a id="neta"></A><H2>Network Activity</h2>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="neta"></a><H2>Network Activity</h2>' 
+  echo '<pre>'
   eval $NETA
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
-  echo '<HR><a id="servs"></A><H3>Services</h3>' 
-  echo '<PRE>'
+  echo '<hr><a id="servs"></a><H3>Services</h3>' 
+  echo '<pre>'
   eval $SERVS | awk  ' { print $3 , $1 , $9 } ' | sort | uniq 2> /dev/null
   echo
   eval $SERVS2 
-  echo '</PRE>'
+  echo '</pre>'
 
-  echo '<hr><P><a id="cron"></A><H2>Cron</h2>' 
-  echo '<PRE>'
+  echo '<hr><p><a id="cron"></a><H2>Cron</h2>' 
+  echo '<pre>'
   eval $CRON_INFO
-  echo '</PRE>'
-  echo '<P><A HREF="#top">Go to the top</A>' 
+  echo '</pre>'
+  echo '<p><a href="#top">Go to the top</a>' 
 
 fi
 
-echo '<HR><a id="optm"></A><H2>Optional modules</h2>' 
+echo '<hr><a id="optm"></a><H2>Optional modules</h2>' 
 
 if [ $SUMMARY -eq 0 ] ; then
   echo '<br><H3>Active Plug-in</h3>' 
@@ -1211,21 +1232,21 @@ if [ $SUMMARY -eq 0 ] ; then
       XX=`echo $i | awk -F. ' { print $3 } ' `
       echo $XX
   done
-  echo '<P><A HREF="#top">Go to the top</A>' 
-  echo '<p><HR>' 
+  echo '<p><a href="#top">Go to the top</a>' 
+  echo '<p><hr>' 
 fi
 
 X=0
 for i in `ls ux2p.*.*.sh`
 do
     XX=`echo $i | awk -F. ' { print $3 } ' `
-    echo ' <a id="Plugin'$X'"> </A>' 
+    echo ' <a id="Plugin'$X'"> </a>' 
     X=`expr $X + 1 `
     . ./$i
-    echo '<P><A HREF="#top">Go to the top</A><p><hr>' 
+    echo '<p><a href="#top">Go to the top</a><p><hr>' 
 done
 
-echo '<HR><a id="opt"></A><H2>Generated Files</h2>' 
+echo '<hr><a id="opt"></a><H2>Generated Files</h2>' 
   for i in `ls -t *.htm | grep $MACHINE`
   do
       echo "<a href=" $i ">" $i "</a>, "
@@ -1233,8 +1254,9 @@ echo '<HR><a id="opt"></A><H2>Generated Files</h2>'
   echo '<br>'
  
 ## END report
+echo '<div><a href="#top" class="back-to-top">⬆ Back to index</a></div>'
 echo '<hr><p><a id="LIC"><b>UX2HTML </b></a>- Unix Configuration Report in HTML format'
-echo '<br>Copyright (C) 1995-2024 meob' 
+echo '<br>Copyright (C) 1995-2025 meob' 
 echo '<br>Statistics generated on: '
 date
 
@@ -1247,12 +1269,13 @@ echo '<br>'
 echo '    This program is distributed in the hope that it will be useful,'
 echo '    but WITHOUT ANY WARRANTY; without even the implied warranty of'
 echo '    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the'
-echo '    <A HREF="http://www.gnu.org/licenses/gpl.txt">GNU General Pubblic License</A>'
+echo '    <a href="http://www.gnu.org/licenses/gpl.txt">GNU General Pubblic License</a>'
 echo '    for more details.'
 
 echo '<p>'
-echo 'Sources: <A HREF="https://github.com/meob/ux2html">GitHub</A>.' 
+echo 'Sources: <a href="https://github.com/meob/ux2html">GitHub</a>.' 
 
+echo '<script src="util.js"></script>'
 echo '</body>' 
 echo '</html>' 
 
